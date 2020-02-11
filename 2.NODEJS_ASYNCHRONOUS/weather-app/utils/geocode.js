@@ -5,17 +5,23 @@ const request = require('request')
 const API_KEY_MAPBOX = 'pk.eyJ1IjoiYWxiZXJ0b2RxNyIsImEiOiJjazY3MGlwdGswZXZ6M2VxanlsNGdrODhiIn0.M8eM1ZIzrjC7Oyu5C_kajg'
 
 const geocode = (address, callback) => {
-    // Uso de API MAPBOX
+
     //  Codificamos la direccion ingresada por el usuario
     var encodeAddress = encodeURIComponent(address)
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeAddress}.json?access_token=${API_KEY_MAPBOX}&limit=1`
+
+    // Uso de API MAPBOX
     request({
-        url: `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeAddress}.json?access_token=${API_KEY_MAPBOX}&limit=1`,
+        url,
         json: true
-    }, (error, response, body) => {
+    }, (error, { body }) => {
+        // error va a controlar si existe un problema con el api de mapbox o red
         if (error) {
             // console.log(error);
             // console.log('Unable to connect to location service!');
             callback('Unable to connect to location service!', undefined)
+        // response.statusCode va a controlar si existe un problema con el input del usuario    
         } else if (body.features.length === 0) {
             // console.log('Unable to find location. Try another search.');
             callback('Unable to find location. Try another search.', undefined)
